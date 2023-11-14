@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Websocket\" />
+  </ItemGroup>
+	
+	<ItemGroup>
+		<Reference Include="CounterStrikeSharp.API">
+			<HintPath>..\..\api\CounterStrikeSharp.API.dll</HintPath>
+		</Reference>
+		<Reference Include="websocket-sharp">
+			<HintPath>..\..\libraries\WebSocketSharp\websocket-sharp\bin\Debug\websocket-sharp.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+</Project>

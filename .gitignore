@@ -1,0 +1,8 @@
+
+.editorconfig
+.vs/Discord/DesignTimeBuild/.dtbcache.v2
+*.vsidx
+*.v2
+.vs/Discord/v17/.suo
+*.bin
+obj/*
