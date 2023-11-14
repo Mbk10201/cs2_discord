@@ -6,3 +6,4 @@
 .vs/Discord/v17/.suo
 *.bin
 obj/*
+bin/*
