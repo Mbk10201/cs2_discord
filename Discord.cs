@@ -76,7 +76,7 @@ public class Discord : BasePlugin, IPluginConfig<Configuration>
     }
     #endregion
 
-    [DiscordGameEvent("Client Connect", "client_connect", "When a client connect the server", options: {"", ""})]
+    [DiscordGameEvent("Client Connect", "client_connect", "When a client connect the server", options: [""])]
     private HookResult OnPlayerConnect(EventPlayerConnect @event, GameEventInfo _)
     {
         var name = @event.Name;
