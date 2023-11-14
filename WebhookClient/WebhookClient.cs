@@ -18,7 +18,7 @@ public class WebhookClient
     {
         Instance = this;
 
-        var url = "https://discord.com/api/webhooks/1173909332874772500/IZ1FigblEKfa4BSDJ3MPu7VX5ZK4_6sNR_P15pBdkegw4z5QxrM4HMrwsq516ghEgUdL";
+        var url = "";
         _ = Send(url, 
             new MessageForm()
             {
