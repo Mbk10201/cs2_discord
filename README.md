@@ -1,6 +1,7 @@
 <h3 align="center">Discord API Integration for <a href="https://asset.party/mbk/discord_api">CS2</a></h3>
 <h5 align="center">Documentation arrives soon !</h5>
 
+<a href="https://discord.gg/htFcqUCQ">Join my discord</a>
 
 <h1>Official support</h1>
 
