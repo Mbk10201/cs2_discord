@@ -16,4 +16,6 @@ This library has been made to manage / announce your server informations to a di
 There is already by default all the game events registered
 This library is still in massive development so if you encounter any problems, you are free to make a issue.
 
+Contact me on discord for requests & more informations: mbk1020
+
 <h1>Screenshots</h1>
