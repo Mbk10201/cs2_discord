@@ -1,6 +1,7 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using Mbk.Discord.Models;
+using System;
 using System.Reflection;
 using System.Text.Json;
 using System.Xml.Linq;
@@ -32,6 +33,7 @@ public class Discord : BasePlugin, IPluginConfig<Configuration>
     public Configuration Config { get; set; }
     public WebsocketClient? Websocket { get; private set; }
     public WebhookClient? Webhook { get; private set; }
+    private static readonly HttpClient client = new();
     #endregion
 
     // This method is called right before `Load` is called
@@ -76,7 +78,7 @@ public class Discord : BasePlugin, IPluginConfig<Configuration>
     }
     #endregion
 
-    [DiscordGameEvent("Client Connect", "client_connect", "When a client connect the server", options: [""])]
+    [DiscordGameEvent("Client Connect", "client_connect", "When a client connect the server", new string[] { "ip", "steamid" })]
     private HookResult OnPlayerConnect(EventPlayerConnect @event, GameEventInfo _)
     {
         var name = @event.Name;
@@ -199,14 +201,15 @@ public class Discord : BasePlugin, IPluginConfig<Configuration>
         return HookResult.Continue;
     }
 
-    [DiscordGameEvent("Player Death", "player_death", "When a client has been killed")]
+    [DiscordGameEvent("Player Death", "player_death", "When a client has been killed", new string[] { "show_killer", "weapon_used" })]
     private HookResult OnPlayerDeathHandler(EventPlayerDeath @event, GameEventInfo _)
     {
         var attacker = @event.Attacker;
         var victim = @event.Userid;
         var headshot = @event.Headshot;
+        var weapon = @event.Weapon;
 
-        var EventSettings = DiscordGameEvent.Get("client_disconnect");
+        var EventSettings = DiscordGameEvent.Get("player_death");
 
         if (!EventSettings.Broadcast)
             return HookResult.Handled;
@@ -223,10 +226,40 @@ public class Discord : BasePlugin, IPluginConfig<Configuration>
                     {
                         Title = EventSettings.Name,
                         Description = $"`{victim.PlayerName}` has been killed by {attacker.PlayerName}.",
-                        Color = EventSettings.GetColor()
+                        Color = EventSettings.GetColor(),
                     }
                 }
             };
+
+            string avatar;
+            if (victim.IsBot)
+            {
+                message.AvatarURL = "https://cdn.discordapp.com/attachments/1110259447256842332/1174322689670905886/Main.png?ex=65672c3b&is=6554b73b&hm=e0225c13459198179fa616114f98eda1d39b4ec0490cea3aa47fae5da41d680d&";
+            }
+            else
+                message.AvatarURL = GetAvatar(victim.SteamID).Result;
+
+            message.Embeds[0].Fields = new();
+
+            if (EventSettings.GetCustomOption("show_killer"))
+            {
+                message.Embeds[0].Fields.Add(new()
+                {
+                    Name = "Killer",
+                    Value = $"```{attacker.PlayerName}```",
+                    Inline = true
+                });
+            }
+
+            if (EventSettings.GetCustomOption("weapon_used"))
+            {
+                message.Embeds[0].Fields.Add(new()
+                {
+                    Name = "Weapon",
+                    Value = $"```{weapon}```",
+                    Inline = true
+                });
+            }
         }
         else
         {
@@ -252,5 +285,16 @@ public class Discord : BasePlugin, IPluginConfig<Configuration>
         }
 
         return HookResult.Continue;
+    }
+
+    public static async Task<string> GetAvatar(ulong steamid)
+    {
+        var url = $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={Instance.Config.SteamAPIToken}&steamids={steamid}";
+        var response = await client.GetAsync(url);
+        var result = await response.Content.ReadAsStringAsync();
+
+        //object structure = JsonSerializer.
+
+        return "";
     }
 }

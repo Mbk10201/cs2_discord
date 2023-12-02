@@ -30,10 +30,22 @@ public class MessageForm
 	[JsonPropertyName( "embeds" )]
 	public List<Embed> Embeds { get; set; } = null;
 
-	/// <summary>
-	/// Allowed mentions for the message
-	/// </summary>
-	[JsonPropertyName( "allowed_mentions" )]
+    /// <summary>
+    /// Username override
+    /// </summary>
+    [JsonPropertyName("username")]
+    public string? Username { get; set; }
+
+    /// <summary>
+    /// Avatar url override
+    /// </summary>
+    [JsonPropertyName("avatar_url")]
+    public string? AvatarURL { get; set; }
+
+    /// <summary>
+    /// Allowed mentions for the message
+    /// </summary>
+    [JsonPropertyName( "allowed_mentions" )]
 	public List<Embed> AllowedMentions { get; set; } = null;
 
 	/// <summary>

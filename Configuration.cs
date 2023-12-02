@@ -10,4 +10,7 @@ public class Configuration: BasePluginConfig
 
     [JsonPropertyName("Token")]
     public string? Token { get; set; }
+
+    [JsonPropertyName("SteamAPI_Token")]
+    public string? SteamAPIToken { get; set;}
 }
