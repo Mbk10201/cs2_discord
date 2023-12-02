@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text.Json;
 using System.Xml;
+using static Mbk.Discord.DiscordGameEvent;
 
 namespace Mbk.Discord;
 
@@ -16,18 +17,18 @@ public class DiscordGameEvent : Attribute
 
     public static string EventFile => Path.Combine(Discord.ConfigsPath, "discord_events.json");
 
-    public class CustomOption
-    {
-        public string Name { get; set; }
-        public object? Value { get; set; }
-    }
-
-    public DiscordGameEvent(string name, string identifier, string description, string[]? options = null)
+    public DiscordGameEvent(string name, string identifier, string description, params string[] options)
     {
         Name = name;
         Identifier = identifier;
         Description = description;
-        CustomOptions = options;
+        CustomOptions = new List<CustomOption>();
+
+        foreach(var x in options)
+        {
+            CustomOptions.Add(new() { Name = x });
+            Console.WriteLine($"[Discord] GameEvent {name} new option: {x}");
+        }
     }
 
     public static GameEventSettings Get(string identifier) => Discord.Instance.GameEventList.Single(x => x.Identifier == identifier);
@@ -69,13 +70,6 @@ public class DiscordGameEvent : Attribute
                         // Check if the attribute is of the desired type
                         if (attribute is DiscordGameEvent customAttribute)
                         {
-                            Console.WriteLine(customAttribute);
-
-                            // Access properties or methods of the custom attribute
-                            Console.WriteLine($"Method: {type.FullName}.{method.Name}, CustomAttribute Property: {customAttribute.Name}");
-
-                            Console.WriteLine(Discord.Instance.GameEventList);
-                            Console.WriteLine(Discord.Instance.GameEventList.Count);
 
                             if (!Discord.Instance.GameEventList.Any(x => x.Identifier == customAttribute.Identifier))
                             {
@@ -83,9 +77,26 @@ public class DiscordGameEvent : Attribute
                                 {
                                     Identifier = customAttribute.Identifier,
                                     Name = customAttribute.Name,
-                                    Description = customAttribute.Description
+                                    Description = customAttribute.Description,
+                                    CustomOptions = customAttribute.CustomOptions,
                                 });
                                 Save();
+                            }
+                            else
+                            {
+                                var selection = Discord.Instance.GameEventList.Single(x => x.Identifier == customAttribute.Identifier);
+
+                                if(selection.CustomOptions.Count != customAttribute.CustomOptions.Count)
+                                {
+                                    foreach (var option in customAttribute.CustomOptions)
+                                    {
+                                        if(!selection.CustomOptions.Any(x => x.Name == option.Name))
+                                        {
+                                            selection.CustomOptions.Add(option);
+                                            Save();
+                                        }
+                                    }
+                                }
                             }
 
                             foreach(var item in Discord.Instance.GameEventList)

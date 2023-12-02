@@ -1,6 +1,5 @@
 ﻿using Mbk.Discord.Enums;
 using System.Text.Json.Serialization;
-
 namespace Mbk.Discord.Models;
 
 public partial class GameEventSettings
@@ -63,10 +62,18 @@ public partial class GameEventSettings
 	[JsonPropertyName( "webhook" )]
 	public string Webhook { get; set; } = null;
 
-	/// <summary>
-	/// Return the current HexColorEmbed value as an INT for discord color pallet
-	/// </summary>
-	public int GetColor()
+    /// <summary>
+    /// Custom event options
+    /// </summary>
+    [JsonPropertyName("custom_options")]
+    public IList<CustomOption>? CustomOptions { get; set; } = new List<CustomOption>();
+
+    public bool GetCustomOption(string name) => CustomOptions.SingleOrDefault(x => x.Name == name).Value;
+
+    /// <summary>
+    /// Return the current HexColorEmbed value as an INT for discord color pallet
+    /// </summary>
+    public int GetColor()
 	{
 		int value;
 
@@ -80,4 +87,10 @@ public partial class GameEventSettings
 
 		return value;
 	}
+}
+
+public class CustomOption
+{
+    public string Name { get; set; }
+	public bool Value { get; set; } = false;
 }
